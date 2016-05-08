@@ -5,8 +5,6 @@ public abstract class STK500Command
     protected int commandId;
     protected int length;
 
-    private byte[] buffer;
-
     public STK500Command(int commandId, int length)
     {
         this.commandId = commandId;
