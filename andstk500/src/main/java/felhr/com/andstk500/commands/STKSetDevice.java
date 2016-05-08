@@ -40,6 +40,7 @@ public class STKSetDevice extends STK500Command
     {
         ByteBuffer buffer = ByteBuffer.allocate(22);
         buffer.put((byte) commandId);
+        buffer.put((byte) deviceCode);
         buffer.put((byte) revision);
         buffer.put((byte) progType);
         buffer.put((byte) parMode);
@@ -70,6 +71,12 @@ public class STKSetDevice extends STK500Command
         public STKSetDeviceBuilder()
         {
             setDevice = new STKSetDevice();
+        }
+
+        public STKSetDeviceBuilder setDeviceCode(int deviceCode)
+        {
+            setDevice.deviceCode = deviceCode;
+            return this;
         }
 
         public STKSetDeviceBuilder setRevision(int rev)
