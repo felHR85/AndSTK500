@@ -32,7 +32,31 @@ public class STKSetDevice extends STK500Command
     public STKSetDevice()
     {
         super(STK500Constants.Cmnd_STK_SET_DEVICE, 22);
-        //TODO: Default values
+
+        /**
+         *  Default values used in the Arduino UNO
+         */
+
+        deviceCode = (byte) 0x86;
+        revision = 0x00;
+        progType = 0x00;
+        parMode = 0x01;
+        polling = 0x01;
+        selfTimed = 0x01;
+        lockBytes = 0x01;
+        fuseBytes = 0x03;
+        flashPollVal1 = (byte) 0xff;
+        flashPollVal2 = (byte) 0xff;
+        eepromPollVal1 = (byte) 0xff;
+        eepromPollVal2 = (byte) 0xff;
+        pageSizeHigh = 0x00;
+        pageSizeLow = (byte) 0x80;
+        eepromSizeHigh = 0x04;
+        eepromSizeLow = 0x00;
+        flashSize4 = 0x00;
+        flashSize3 = 0x00;
+        flashSize2 = 0x80;
+        flashSize1 = 0x00;
     }
 
     @Override
