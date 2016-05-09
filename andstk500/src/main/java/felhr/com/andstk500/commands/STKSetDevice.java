@@ -37,7 +37,7 @@ public class STKSetDevice extends STK500Command
          *  Default values used in the Arduino UNO
          */
 
-        deviceCode = (byte) 0x86;
+        deviceCode = 0x86;
         revision = 0x00;
         progType = 0x00;
         parMode = 0x01;
@@ -45,12 +45,12 @@ public class STKSetDevice extends STK500Command
         selfTimed = 0x01;
         lockBytes = 0x01;
         fuseBytes = 0x03;
-        flashPollVal1 = (byte) 0xff;
-        flashPollVal2 = (byte) 0xff;
-        eepromPollVal1 = (byte) 0xff;
-        eepromPollVal2 = (byte) 0xff;
+        flashPollVal1 = 0xff;
+        flashPollVal2 = 0xff;
+        eepromPollVal1 = 0xff;
+        eepromPollVal2 = 0xff;
         pageSizeHigh = 0x00;
-        pageSizeLow = (byte) 0x80;
+        pageSizeLow = 0x80;
         eepromSizeHigh = 0x04;
         eepromSizeLow = 0x00;
         flashSize4 = 0x00;
