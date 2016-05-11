@@ -26,7 +26,7 @@ public class STKSetDeviceExt extends STK500Command
     @Override
     public byte[] getCommandBuffer()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(7);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put((byte) commandId);
         buffer.put((byte) commandSize);
         buffer.put((byte) eepromPageSize);

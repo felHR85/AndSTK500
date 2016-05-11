@@ -18,7 +18,7 @@ public class STKEnterProgMode extends STK500Command
     @Override
     public byte[] getCommandBuffer()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(2);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put((byte) STK500Constants.Cmnd_STK_ENTER_PROGMODE);
         buffer.put((byte) STK500Constants.Sync_CRC_EOP);
         return buffer.array();

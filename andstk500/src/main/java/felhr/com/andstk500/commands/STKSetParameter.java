@@ -21,7 +21,7 @@ public class STKSetParameter extends STK500Command
     @Override
     public byte[] getCommandBuffer()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(4);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put((byte) commandId);
         buffer.put((byte) parameter);
         buffer.put((byte) value);

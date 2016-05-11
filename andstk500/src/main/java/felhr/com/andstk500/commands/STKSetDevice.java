@@ -62,7 +62,7 @@ public class STKSetDevice extends STK500Command
     @Override
     public byte[] getCommandBuffer()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(22);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put((byte) commandId);
         buffer.put((byte) deviceCode);
         buffer.put((byte) revision);

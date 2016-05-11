@@ -22,7 +22,7 @@ public class STKLoadAddress extends STK500Command
     @Override
     public byte[] getCommandBuffer()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(4);
+        ByteBuffer buffer = ByteBuffer.allocate(length);
         buffer.put((byte) STK500Constants.Cmnd_STK_LOAD_ADDRESS);
         buffer.put((byte) addrLow);
         buffer.put((byte) addrHigh);
