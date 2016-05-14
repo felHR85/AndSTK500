@@ -6,28 +6,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import felhr.com.andstk500.commands.STK500Constants;
-import felhr.com.andstk500.commands.STKGetParameter;
+import felhr.com.andstk500.commands.STKProgramData;
 
 /**
- * STKGetParameter unit test
+ * STKProgramData unit test
  */
-public class STKGetParameterTest extends TestCase
+public class STKProgramDataTest extends TestCase
 {
-    private final int parameterExpected = 0x80;
-    private STKGetParameter candidate;
+    private final int dataByte = 0x80;
+
+    private STKProgramData candidate;
 
     @Before
     public void setUp()
     {
-        candidate = new STKGetParameter(parameterExpected);
+        candidate = new STKProgramData(dataByte);
     }
 
     @Test
     public void testCommandBuffer()
     {
         byte[] buffer = candidate.getCommandBuffer();
-        assertEquals(STK500Constants.Cmnd_STK_GET_PARAMETER, buffer[0]);
-        assertEquals((byte) parameterExpected, buffer[1]);
+        assertEquals(STK500Constants.Cmnd_STK_PROG_DATA, buffer[0]);
+        assertEquals((byte) dataByte, buffer[1]);
         assertEquals(STK500Constants.Sync_CRC_EOP, buffer[2]);
     }
 }
