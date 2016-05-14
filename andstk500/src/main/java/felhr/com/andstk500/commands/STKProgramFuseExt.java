@@ -30,6 +30,7 @@ public class STKProgramFuseExt extends STK500Command
         buffer.put((byte) fuseLow);
         buffer.put((byte) fuseHigh);
         buffer.put((byte) fuseExt);
+        buffer.put((byte) STK500Constants.Sync_CRC_EOP);
         return buffer.array();
     }
 }
