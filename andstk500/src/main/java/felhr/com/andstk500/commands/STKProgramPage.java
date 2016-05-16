@@ -18,7 +18,7 @@ public class STKProgramPage extends STK500Command
 
     public STKProgramPage(String memType, byte[] data)
     {
-        super(STK500Constants.Cmnd_STK_PROG_PAGE, data.length + 6);
+        super(STK500Constants.Cmnd_STK_PROG_PAGE, data.length + 5);
 
         if(memType.equals(EEPROM))
             this.memType = EEPROM.getBytes()[0];
