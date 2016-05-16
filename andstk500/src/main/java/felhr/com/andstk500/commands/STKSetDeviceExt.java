@@ -37,7 +37,7 @@ public class STKSetDeviceExt extends STK500Command
         return buffer.array();
     }
 
-    public class STKSetDeviceExtBuilder
+    public static class STKSetDeviceExtBuilder
     {
         private STKSetDeviceExt stkSetDeviceExt;
 
