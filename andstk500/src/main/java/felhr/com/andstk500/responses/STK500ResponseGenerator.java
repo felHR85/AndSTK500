@@ -1,7 +1,5 @@
 package felhr.com.andstk500.responses;
 
-import java.util.Arrays;
-
 import felhr.com.andstk500.commands.STK500Constants;
 
 /**
@@ -30,15 +28,19 @@ public class STK500ResponseGenerator
     {
         //TODO: Generate correct STK500 responses classes for each command.
         //TODO: Return true if the response is correct. False if some bytes are missing
-        if(newCommand)
-        {
-            if(commandType == STK500Constants.Cmnd_STK_GET_SIGN_ON)
-            {
-                return generateSTKGetSignOnResponse(buffer);
-            }
-        }else
-        {
 
+        if(commandType == STK500Constants.Cmnd_STK_GET_SIGN_ON)
+        {
+            return generateResponse(STK500Constants.Cmnd_STK_GET_SIGN_ON, 3, 1, buffer);
+        }else if(commandType == STK500Constants.Cmnd_STK_GET_SYNC)
+        {
+            return generateResponse(STK500Constants.Cmnd_STK_GET_SYNC, 2 , 0, buffer);
+        }else if(commandType == STK500Constants.Cmnd_STK_GET_PARAMETER)
+        {
+            return generateResponse(STK500Constants.Cmnd_STK_GET_PARAMETER, 3, 1, buffer);
+        }else if(commandType == STK500Constants.Cmnd_STK_SET_PARAMETER)
+        {
+           //TODO Variable parameters
         }
         return false;
     }
@@ -50,21 +52,26 @@ public class STK500ResponseGenerator
         return response;
     }
 
-    private boolean generateSTKGetSignOnResponse(byte[] buffer)
+    private boolean generateResponse(int commandId, int maxLength, int numberArguments, byte[] buffer)
     {
-        int maxResponseLength = 3;
-        if(buffer.length == maxResponseLength)
+        System.arraycopy(buffer, 0, responseBuffer, pointer, buffer.length);
+        pointer += buffer.length;
+
+        if(pointer == maxLength)
         {
-            currentResponse = new STKInsync(
-                    STK500Constants.Cmnd_STK_GET_SIGN_ON, new int[]{buffer[1]}, null, true);
+            int[] args = new int[numberArguments];
+            for(int i=1;i<=numberArguments;i++)
+            {
+                args[i-1] = responseBuffer[i];
+            }
+            currentResponse = new STKInsync(commandId, args, null, responseBuffer[pointer-1] == STK500Constants.Resp_STK_OK);
+            pointer = 0;
             return true;
         }else
         {
-            System.arraycopy(buffer, 0, responseBuffer, pointer, buffer.length);
-            pointer = buffer.length;
-            return false;
+            //TODO!!!
         }
+
+        return false;
     }
-
-
 }
