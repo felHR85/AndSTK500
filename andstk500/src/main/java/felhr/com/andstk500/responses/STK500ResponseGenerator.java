@@ -14,8 +14,6 @@ public class STK500ResponseGenerator
     private byte[] responseBuffer;
     private int pointer;
 
-    private boolean newCommand;
-
     private STK500Response currentResponse;
 
 
@@ -23,7 +21,6 @@ public class STK500ResponseGenerator
     {
         this.responseBuffer = new byte[MAX_BUFFER];
         this.pointer = 0;
-        this.newCommand = true;
     }
 
     public boolean generateSTK500Response(STK500Command command, byte[] buffer)

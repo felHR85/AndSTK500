@@ -47,4 +47,10 @@ public class STKReadPageTest extends TestCase
         assertEquals(STKReadPage.FLASH.getBytes()[0], buffer[3]);
         assertEquals(STK500Constants.Sync_CRC_EOP, buffer[4]);
     }
+
+    @Test
+    public void testGetDataLength()
+    {
+        assertEquals(0x0080, candidateE.getDataLength());
+    }
 }

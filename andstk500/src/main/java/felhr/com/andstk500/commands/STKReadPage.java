@@ -42,6 +42,6 @@ public class STKReadPage extends STK500Command
 
     public int getDataLength()
     {
-        return (bytesHigh & 0xff) << 8 + (bytesLow & 0xff);
+        return (bytesHigh & 0xff << 8) + (bytesLow & 0xff);
     }
 }
