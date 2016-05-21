@@ -17,4 +17,9 @@ public abstract class STK500Command
     {
         return length;
     }
+
+    public int getCommandId()
+    {
+        return commandId;
+    }
 }

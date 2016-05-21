@@ -39,4 +39,9 @@ public class STKReadPage extends STK500Command
         buffer.put((byte) STK500Constants.Sync_CRC_EOP);
         return buffer.array();
     }
+
+    public int getDataLength()
+    {
+        return (bytesHigh & 0xff) << 8 + (bytesLow & 0xff);
+    }
 }
