@@ -56,7 +56,7 @@ public class STK500ResponseGenerator
             return generateResponse(STK500Constants.Cmnd_STK_CHIP_ERASE, 2, 0, buffer);
         }else if(commandType == STK500Constants.Cmnd_STK_CHECK_AUTOINC)
         {
-            return generateResponse(STK500Constants.Cmnd_STK_LOAD_ADDRESS, 2, 0, buffer);
+            return generateResponse(STK500Constants.Cmnd_STK_CHECK_AUTOINC, 2, 0, buffer);
         }else if(commandType == STK500Constants.Cmnd_STK_PROG_FLASH)
         {
             return generateResponse(STK500Constants.Cmnd_STK_PROG_FLASH, 2, 0, buffer);
