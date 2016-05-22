@@ -104,6 +104,9 @@ public class STK500ResponseGenerator
         }else if(commandType == STK500Constants.Cmnd_STK_READ_OSCCAL_EXT)
         {
             return generateResponse(STK500Constants.Cmnd_STK_READ_OSCCAL_EXT, 3, 1, buffer);
+        }else if(commandType == STK500Constants.Cmnd_STK_LOAD_ADDRESS)
+        {
+            return generateResponse(STK500Constants.Cmnd_STK_LOAD_ADDRESS, 2, 0, buffer);
         }
 
         return false;
