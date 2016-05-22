@@ -38,7 +38,7 @@ public class STK500ResponseGenerator
             return generateResponse(STK500Constants.Cmnd_STK_GET_PARAMETER, 3, 1, buffer);
         }else if(commandType == STK500Constants.Cmnd_STK_SET_PARAMETER)
         {
-            return generateResponse(STK500Constants.Cmnd_STK_SET_PARAMETER, 3, 0, buffer);
+            return generateResponse(STK500Constants.Cmnd_STK_SET_PARAMETER, 3, 1, buffer);
         }else if(commandType == STK500Constants.Cmnd_STK_SET_DEVICE)
         {
             return generateResponse(STK500Constants.Cmnd_STK_SET_DEVICE, 2, 0, buffer);
@@ -121,7 +121,7 @@ public class STK500ResponseGenerator
         Sometimes some USB to Serial converters attached to an Android phone split received data in more than one call.
         this must be kept in mind because that's because this method doesn't retrieve directly a STK500Response method.
 
-        Received data is buffered and it its length matches expected length it will create a STK500Response object and
+        Received data is buffered and if its length matches expected length it will create a STK500Response object and
         will return true.
         If doesn't match will return false except if we are dealing with a SET_PARAMETER (length is 2 or 3), in which case
         if last byte is OK it will create a new STK500Response object
@@ -157,13 +157,13 @@ public class STK500ResponseGenerator
                 if(responseBuffer[pointer - 1] == STK500Constants.Resp_STK_OK)
                 {
                     int[] args = new int[0];
-                    currentResponse = new STKInsync(commandId, args, null, false);
+                    byte[] newBuffer = new byte[0];
+                    currentResponse = new STKInsync(commandId, args, newBuffer, true);
                     pointer = 0;
                     return true;
                 }
             }
         }
-
         return false;
     }
 }
