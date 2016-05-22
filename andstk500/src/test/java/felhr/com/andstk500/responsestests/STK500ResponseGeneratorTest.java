@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import felhr.com.andstk500.commands.STK500Command;
 import felhr.com.andstk500.commands.STK500Constants;
 import felhr.com.andstk500.commands.STKCheckAutoInc;
 import felhr.com.andstk500.commands.STKChipErase;
@@ -849,6 +848,127 @@ public class STK500ResponseGeneratorTest extends TestCase
         STKInsync response = (STKInsync) candidate.getCurrentResponse();
         assertEquals(STK500Constants.Cmnd_STK_PROG_FUSE_EXT, response.getCommandId());
         assertEquals(0, response.getParameters().length);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testProgLock()
+    {
+        // Mock getCommandId method
+        STKProgramLock stk500Command = Mockito.mock(STKProgramLock.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_PROG_LOCK);
+
+        // Create received buffer OK
+        byte[] buffer = new byte[2];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_PROG_LOCK, response.getCommandId());
+        assertEquals(0, response.getParameters().length);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testProgLockSplit()
+    {
+        // Mock getCommandId method
+        STKProgramLock stk500Command = Mockito.mock(STKProgramLock.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_PROG_LOCK);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[1];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+
+        // Create received buffer2
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_PROG_LOCK, response.getCommandId());
+        assertEquals(0, response.getParameters().length);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testProgPage()
+    {
+        // Mock getCommandId method
+        STKProgramPage stk500Command = Mockito.mock(STKProgramPage.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_PROG_PAGE);
+
+        // Create received buffer OK
+        byte[] buffer = new byte[2];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_PROG_PAGE, response.getCommandId());
+        assertEquals(0, response.getParameters().length);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testProgPageSplit()
+    {
+        // Mock getCommandId method
+        STKProgramPage stk500Command = Mockito.mock(STKProgramPage.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_PROG_PAGE);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[1];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+
+        // Create received buffer2
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_PROG_PAGE, response.getCommandId());
+        assertEquals(0, response.getParameters().length);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testReadFlash()
+    {
+        // Mock getCommandId method
+        STKReadFlash stk500Command = Mockito.mock(STKReadFlash.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_FLASH);
+
+        // Create received buffer OK
+        byte[] buffer = new byte[4];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0xff;
+        buffer[2] = (byte) 0x80;
+        buffer[3] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_FLASH, response.getCommandId());
+        assertEquals((byte) 0xff, response.getParameters()[0]);
+        assertEquals((byte) 0x80, response.getParameters()[1]);
         assertEquals(0, response.getData().length);
         assertEquals(true, response.isOk());
     }
