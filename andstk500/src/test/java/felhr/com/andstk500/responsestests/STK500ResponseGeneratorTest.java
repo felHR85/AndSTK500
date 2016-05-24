@@ -1022,4 +1022,167 @@ public class STK500ResponseGeneratorTest extends TestCase
         assertEquals(true, response.isOk());
 
     }
+
+    @Test
+    public void testReadFuse()
+    {
+        // Mock getCommandId method
+        STKReadFuse stk500Command = Mockito.mock(STKReadFuse.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_FUSE);
+
+        // Create received buffer
+        byte[] buffer = new byte[4];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) 0xff;
+        buffer[3] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_FUSE, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testReadFuseSplit()
+    {
+        // Mock getCommandId method
+        STKReadFuse stk500Command = Mockito.mock(STKReadFuse.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_FUSE);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[3];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+        buffer1[2] = (byte) 0xff;
+
+        // Create received buffer2
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_FUSE, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testReadFuseExt()
+    {
+        // Mock getCommandId method
+        STKReadFuseExt stk500Command = Mockito.mock(STKReadFuseExt.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_FUSE_EXT);
+
+        // Create received buffer
+        byte[] buffer = new byte[5];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) 0xff;
+        buffer[3] = (byte) 0x27;
+        buffer[4] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_FUSE_EXT, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals((byte) 0x27, response.getParameters()[2]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testReadFuseExtSplit()
+    {
+        // Mock getCommandId method
+        STKReadFuseExt stk500Command = Mockito.mock(STKReadFuseExt.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_FUSE_EXT);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[4];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+        buffer1[2] = (byte) 0xff;
+        buffer1[3] = (byte) 0x27;
+
+        // Create received buffer2
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_FUSE_EXT, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals((byte) 0x27, response.getParameters()[2]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testReadLock()
+    {
+        // Mock getCommandId method
+        STKReadLock stk500Command = Mockito.mock(STKReadLock.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_LOCK);
+
+        // Create received buffer OK
+        byte[] buffer = new byte[3];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_LOCK, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+
+    }
+
+    @Test
+    public void testReadLockSplit()
+    {
+        // Mock getCommandId method
+        STKReadLock stk500Command = Mockito.mock(STKReadLock.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_LOCK);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[2];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+
+        // Create received buffer1
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_LOCK, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
 }
