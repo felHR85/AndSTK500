@@ -1255,7 +1255,63 @@ public class STK500ResponseGeneratorTest extends TestCase
             i++;
         }
         assertEquals(true, response.isOk());
+    }
 
+    @Test
+    public void testSignatureBytes()
+    {
+        // Mock getCommandId method
+        STKReadSignature stk500Command = Mockito.mock(STKReadSignature.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_SIGN);
 
+        // Create received buffer OK
+        byte[] buffer = new byte[5];
+        buffer[0] = STK500Constants.Cmnd_STK_READ_SIGN;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) 0xff;
+        buffer[3] = (byte) 0xf2;
+        buffer[4] = STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_SIGN, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals((byte) 0xf2, response.getParameters()[2]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testSignatureBytesSplit()
+    {
+        // Mock getCommandId method
+        STKReadSignature stk500Command = Mockito.mock(STKReadSignature.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_SIGN);
+
+        // Create received buffer1
+        byte[] buffer1 = new byte[2];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+
+        // Create received buffer1
+        byte[] buffer2 = new byte[3];
+        buffer2[0] = (byte) 0xff;
+        buffer2[1] = (byte) 0xf2;
+        buffer2[2] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_SIGN, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals((byte) 0xff, response.getParameters()[1]);
+        assertEquals((byte) 0xf2, response.getParameters()[2]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
     }
 }
