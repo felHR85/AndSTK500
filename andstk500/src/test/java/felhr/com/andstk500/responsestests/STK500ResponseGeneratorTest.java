@@ -1314,4 +1314,100 @@ public class STK500ResponseGeneratorTest extends TestCase
         assertEquals(0, response.getData().length);
         assertEquals(true, response.isOk());
     }
+
+    @Test
+    public void tesOsccal()
+    {
+        // Mock getCommandId method
+        STKReadOsccal stk500Command = Mockito.mock(STKReadOsccal.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_OSCCAL);
+
+        // Create received buffer
+        byte[] buffer = new byte[3];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_OSCCAL, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testOsccalSplit()
+    {
+        // Mock getCommandId method
+        STKReadOsccal stk500Command = Mockito.mock(STKReadOsccal.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_OSCCAL);
+
+        byte[] buffer1 = new byte[2];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_OSCCAL, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testOsccalExt()
+    {
+        // Mock getCommandId method
+        STKReadOsccalExt stk500Command = Mockito.mock(STKReadOsccalExt.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_OSCCAL_EXT);
+
+        // Create received buffer
+        byte[] buffer = new byte[3];
+        buffer[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer[1] = (byte) 0x80;
+        buffer[2] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_OSCCAL_EXT, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
+
+    @Test
+    public void testOsccalExtSplit()
+    {
+        // Mock getCommandId method
+        STKReadOsccalExt stk500Command = Mockito.mock(STKReadOsccalExt.class);
+        Mockito.when(stk500Command.getCommandId()).thenReturn(STK500Constants.Cmnd_STK_READ_OSCCAL_EXT);
+
+        byte[] buffer1 = new byte[2];
+        buffer1[0] = (byte) STK500Constants.Resp_STK_INSYNC;
+        buffer1[1] = (byte) 0x80;
+
+        byte[] buffer2 = new byte[1];
+        buffer2[0] = (byte) STK500Constants.Resp_STK_OK;
+
+        // Generate STK500 response object
+        assertEquals(false, candidate.generateSTK500Response(stk500Command, buffer1));
+        assertEquals(true, candidate.generateSTK500Response(stk500Command, buffer2));
+
+        STKInsync response = (STKInsync) candidate.getCurrentResponse();
+        assertEquals(STK500Constants.Cmnd_STK_READ_OSCCAL_EXT, response.getCommandId());
+        assertEquals((byte) 0x80, response.getParameters()[0]);
+        assertEquals(0, response.getData().length);
+        assertEquals(true, response.isOk());
+    }
 }
