@@ -148,7 +148,7 @@ public class STK500ResponseGenerator
             }else
             {
                 newBuffer = new byte[maxLength - 2];
-                System.arraycopy(buffer, 1, newBuffer, 0, maxLength - 2);
+                System.arraycopy(responseBuffer, 1, newBuffer, 0, maxLength - 2);
             }
             currentResponse = new STKInsync(commandId, args, newBuffer, responseBuffer[pointer-1] == STK500Constants.Resp_STK_OK);
             pointer = 0;
