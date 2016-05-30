@@ -9,8 +9,10 @@ public interface IPhy
     boolean write(byte[] data);
     boolean close();
 
-    interface OnDataReceived
+    interface OnChangesFromPhyLayer
     {
-        void onDataReceived();
+        void onChannelOpened();
+        void onDataReceived(byte[] data);
+        void onChannelClosed();
     }
 }
