@@ -18,20 +18,20 @@ public class UsbCommunicator implements IPhy
     }
 
     @Override
-    public boolean open()
+    public void open()
     {
-        return false;
+
     }
 
     @Override
-    public boolean write(byte[] data)
+    public void write(byte[] data)
     {
-        return false;
+
     }
 
     @Override
-    public boolean close()
+    public void close()
     {
-        return false;
+
     }
 }

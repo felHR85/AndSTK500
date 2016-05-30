@@ -5,9 +5,9 @@ package felhr.com.andstk500.phy;
  */
 public interface IPhy
 {
-    boolean open();
-    boolean write(byte[] data);
-    boolean close();
+    void open();
+    void write(byte[] data);
+    void close();
 
     interface OnChangesFromPhyLayer
     {
