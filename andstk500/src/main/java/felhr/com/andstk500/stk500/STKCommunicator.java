@@ -277,7 +277,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            currentCommand = new STKReadPage(bytesHigh, bytesLow, memType)
+            currentCommand = new STKReadPage(bytesHigh, bytesLow, memType);
             phyComm.write(currentCommand.getCommandBuffer());
         }
     }
