@@ -27,6 +27,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     /**
      * Public api
      */
+
     public void openSTK500Channel()
     {
         phyComm.open();
@@ -41,8 +42,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     {
         if(allowNewCommand.get())
         {
-            phyComm.write(new STKGetSignOn().getCommandBuffer());
             allowNewCommand.set(false);
+            phyComm.write(new STKGetSignOn().getCommandBuffer());
         }
     }
 
@@ -50,8 +51,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     {
         if(allowNewCommand.get())
         {
-            phyComm.write(new STKGetSync().getCommandBuffer());
             allowNewCommand.set(false);
+            phyComm.write(new STKGetSync().getCommandBuffer());
         }
     }
 
@@ -59,8 +60,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     {
         if(allowNewCommand.get())
         {
-            phyComm.write(new STKGetParameter(parameter).getCommandBuffer());
             allowNewCommand.set(false);
+            phyComm.write(new STKGetParameter(parameter).getCommandBuffer());
         }
     }
 
@@ -68,8 +69,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     {
         if(allowNewCommand.get())
         {
-            phyComm.write(new STKSetParameter(parameter, value).getCommandBuffer());
             allowNewCommand.set(false);
+            phyComm.write(new STKSetParameter(parameter, value).getCommandBuffer());
         }
     }
 
@@ -78,8 +79,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             //TODO!! A lot of parameters. See how many of them are really important
-            phyComm.write(new STKSetDevice.STKSetDeviceBuilder().build().getCommandBuffer());
             allowNewCommand.set(false);
+            phyComm.write(new STKSetDevice.STKSetDeviceBuilder().build().getCommandBuffer());
         }
     }
 
@@ -88,6 +89,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     {
         if(allowNewCommand.get())
         {
+            allowNewCommand.set(false);
             phyComm.write(new STKSetDeviceExt.STKSetDeviceExtBuilder()
                 .setCommandSize(commandSize)
                 .setEepromPageSize(eepromPageSize)
@@ -95,10 +97,188 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
                 .setSignalBs2(signalbs2)
                 .setResetDisable(resetDisable)
                 .build().getCommandBuffer());
-            allowNewCommand.set(false);
         }
     }
 
+    public void enterProgamMode()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKEnterProgMode().getCommandBuffer());
+        }
+    }
+
+    public void leaveProgramMode()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKLeaveProgramMode().getCommandBuffer());
+        }
+    }
+
+    public void chipErase()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKChipErase().getCommandBuffer());
+        }
+    }
+
+    public void checkAutoInc()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKCheckAutoInc().getCommandBuffer());
+        }
+    }
+
+    public void loadAddress(int addrLow, int addrHigh)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKLoadAddress(addrLow, addrHigh).getCommandBuffer());
+        }
+    }
+
+    public void programFlash(int flashLow, int flashHigh)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramFlash(flashLow, flashHigh).getCommandBuffer());
+        }
+    }
+
+    public void programData(int data)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramData(data).getCommandBuffer());
+        }
+    }
+
+    public void programFuse(int fuseLow, int fuseHigh)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramFuse(fuseLow, fuseHigh).getCommandBuffer());
+        }
+    }
+
+    public void programFuseExt(int fuseLow, int fuseHigh, int fuseExt)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramFuseExt(fuseLow, fuseHigh, fuseExt).getCommandBuffer());
+        }
+    }
+
+    public void programLock()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramLock().getCommandBuffer());
+        }
+    }
+
+    public void programPage(String memType, byte[] data)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKProgramPage(memType, data).getCommandBuffer());
+        }
+    }
+
+    public void readFlash()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadFlash().getCommandBuffer());
+        }
+    }
+
+    public void readData()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadData().getCommandBuffer());
+        }
+    }
+
+    public void readFuse()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadFuse().getCommandBuffer());
+        }
+    }
+
+    public void readFuseExt()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadFuseExt().getCommandBuffer());
+        }
+    }
+
+    public void readLock()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadLock().getCommandBuffer());
+        }
+    }
+
+    public void readPage(int bytesHigh, int bytesLow, String memType)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadPage(bytesHigh, bytesLow, memType).getCommandBuffer());
+        }
+    }
+
+    public void readSignature()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadSignature().getCommandBuffer());
+        }
+    }
+
+    public void readOscillator()
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadOsccal().getCommandBuffer());
+        }
+    }
+
+    public void readOscillatorExt(int calByte)
+    {
+        if(allowNewCommand.get())
+        {
+            allowNewCommand.set(false);
+            phyComm.write(new STKReadOsccalExt(calByte).getCommandBuffer());
+        }
+    }
 
     @Override
     public void onChannelOpened()
