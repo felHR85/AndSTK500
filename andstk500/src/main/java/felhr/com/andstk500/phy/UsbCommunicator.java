@@ -8,6 +8,8 @@ import android.hardware.usb.UsbDeviceConnection;
  */
 public class UsbCommunicator implements IPhy
 {
+    private IPhy.OnChangesFromPhyLayer callback;
+
     private UsbDevice device;
     private UsbDeviceConnection connection;
 
