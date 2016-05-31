@@ -8,6 +8,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import felhr.com.andstk500.commands.*;
 import felhr.com.andstk500.phy.IPhy;
 import felhr.com.andstk500.phy.UsbCommunicator;
+import felhr.com.andstk500.responses.STK500Response;
+import felhr.com.andstk500.responses.STK500ResponseGenerator;
+import felhr.com.andstk500.responses.STKInsync;
 
 /**
  * STK500v1 api
@@ -16,12 +19,15 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
 {
     private IPhy phyComm;
     private AtomicBoolean allowNewCommand;
+    private STK500Command currentCommand;
+    private STK500ResponseGenerator responseGenerator;
 
     // Usb constructor
     public STKCommunicator(UsbDevice device, UsbDeviceConnection connection)
     {
         phyComm = new UsbCommunicator(device, connection);
-        allowNewCommand = new AtomicBoolean(true);
+        allowNewCommand = new AtomicBoolean(false);
+        responseGenerator = new STK500ResponseGenerator();
     }
 
     /**
@@ -43,7 +49,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKGetSignOn().getCommandBuffer());
+            currentCommand = new STKGetSignOn();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -52,7 +59,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKGetSync().getCommandBuffer());
+            currentCommand = new STKGetSync();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -61,7 +69,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKGetParameter(parameter).getCommandBuffer());
+            currentCommand = new STKGetParameter(parameter);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -70,7 +79,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKSetParameter(parameter, value).getCommandBuffer());
+            currentCommand = new STKSetParameter(parameter, value);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -80,7 +90,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         {
             //TODO!! A lot of parameters. See how many of them are really important
             allowNewCommand.set(false);
-            phyComm.write(new STKSetDevice.STKSetDeviceBuilder().build().getCommandBuffer());
+            currentCommand = new STKSetDevice.STKSetDeviceBuilder().build();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -90,13 +101,14 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKSetDeviceExt.STKSetDeviceExtBuilder()
-                .setCommandSize(commandSize)
-                .setEepromPageSize(eepromPageSize)
-                .setSignalPagel(signalPagel)
-                .setSignalBs2(signalbs2)
-                .setResetDisable(resetDisable)
-                .build().getCommandBuffer());
+            currentCommand = new STKSetDeviceExt.STKSetDeviceExtBuilder()
+                    .setCommandSize(commandSize)
+                    .setEepromPageSize(eepromPageSize)
+                    .setSignalPagel(signalPagel)
+                    .setSignalBs2(signalbs2)
+                    .setResetDisable(resetDisable)
+                    .build();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -105,7 +117,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKEnterProgMode().getCommandBuffer());
+            currentCommand = new STKEnterProgMode();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -114,7 +127,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKLeaveProgramMode().getCommandBuffer());
+            currentCommand = new STKLeaveProgramMode();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -123,7 +137,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKChipErase().getCommandBuffer());
+            currentCommand = new STKChipErase();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -132,7 +147,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKCheckAutoInc().getCommandBuffer());
+            currentCommand = new STKCheckAutoInc();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -141,7 +157,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKLoadAddress(addrLow, addrHigh).getCommandBuffer());
+            currentCommand = new STKLoadAddress(addrLow, addrHigh);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -150,7 +167,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramFlash(flashLow, flashHigh).getCommandBuffer());
+            currentCommand = new STKProgramFlash(flashLow, flashHigh);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -159,7 +177,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramData(data).getCommandBuffer());
+            currentCommand = new STKProgramData(data);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -168,7 +187,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramFuse(fuseLow, fuseHigh).getCommandBuffer());
+            currentCommand = new STKProgramFuse(fuseLow, fuseHigh);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -177,7 +197,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramFuseExt(fuseLow, fuseHigh, fuseExt).getCommandBuffer());
+            currentCommand = new STKProgramFuseExt(fuseLow, fuseHigh, fuseExt);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -186,7 +207,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramLock().getCommandBuffer());
+            currentCommand = new STKProgramLock();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -195,7 +217,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKProgramPage(memType, data).getCommandBuffer());
+            currentCommand = new STKProgramPage(memType, data);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -204,7 +227,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadFlash().getCommandBuffer());
+            currentCommand = new STKReadFlash();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -213,7 +237,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadData().getCommandBuffer());
+            currentCommand = new STKReadData();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -222,7 +247,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadFuse().getCommandBuffer());
+            currentCommand = new STKReadFuse();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -231,7 +257,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadFuseExt().getCommandBuffer());
+            currentCommand = new STKReadFuseExt();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -240,7 +267,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadLock().getCommandBuffer());
+            currentCommand = new STKReadLock();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -249,7 +277,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadPage(bytesHigh, bytesLow, memType).getCommandBuffer());
+            currentCommand = new STKReadPage(bytesHigh, bytesLow, memType)
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -258,7 +287,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadSignature().getCommandBuffer());
+            currentCommand = new STKReadSignature();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -267,7 +297,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadOsccal().getCommandBuffer());
+            currentCommand = new STKReadOsccal();
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
@@ -276,25 +307,31 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         if(allowNewCommand.get())
         {
             allowNewCommand.set(false);
-            phyComm.write(new STKReadOsccalExt(calByte).getCommandBuffer());
+            currentCommand = new STKReadOsccalExt(calByte);
+            phyComm.write(currentCommand.getCommandBuffer());
         }
     }
 
     @Override
     public void onChannelOpened()
     {
-
+        allowNewCommand.set(true);
     }
 
     @Override
     public void onDataReceived(byte[] dataReceived)
     {
-
+        boolean ret = responseGenerator.generateSTK500Response(currentCommand, dataReceived);
+        if(ret)
+        {
+            STKInsync response = (STKInsync) responseGenerator.getCurrentResponse();
+            //TODO: Send OK/NOK up through a callback still not defined
+        }
     }
 
     @Override
     public void onChannelClosed()
     {
-
+        allowNewCommand.set(false);
     }
 }
