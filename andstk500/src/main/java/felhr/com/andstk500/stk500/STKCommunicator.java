@@ -25,7 +25,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     // Usb constructor
     public STKCommunicator(UsbDevice device, UsbDeviceConnection connection)
     {
-        phyComm = new UsbCommunicator(device, connection);
+        phyComm = new UsbCommunicator(this, device, connection);
         allowNewCommand = new AtomicBoolean(false);
         responseGenerator = new STK500ResponseGenerator();
     }

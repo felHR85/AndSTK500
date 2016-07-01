@@ -5,7 +5,7 @@ package felhr.com.andstk500.phy;
  */
 public interface IPhy
 {
-    void open();
+    boolean open();
     void write(byte[] data);
     void close();
 
