@@ -2,13 +2,13 @@ package felhr.com.andstk500.stk500;
 
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
+import android.support.annotation.VisibleForTesting;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import felhr.com.andstk500.commands.*;
 import felhr.com.andstk500.phy.IPhy;
 import felhr.com.andstk500.phy.UsbCommunicator;
-import felhr.com.andstk500.responses.STK500Response;
 import felhr.com.andstk500.responses.STK500ResponseGenerator;
 import felhr.com.andstk500.responses.STKInsync;
 
@@ -333,5 +333,11 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     public void onChannelClosed()
     {
         allowNewCommand.set(false);
+    }
+
+    @VisibleForTesting
+    public void injectPhyLayer(IPhy phyComm)
+    {
+        this.phyComm = phyComm;
     }
 }
