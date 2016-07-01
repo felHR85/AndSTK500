@@ -34,9 +34,9 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
      * Public api
      */
 
-    public void openSTK500Channel()
+    public boolean openSTK500Channel()
     {
-        phyComm.open();
+        return phyComm.open();
     }
 
     public void closeSTK500Channel()
