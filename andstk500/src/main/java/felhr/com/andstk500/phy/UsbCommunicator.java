@@ -11,6 +11,8 @@ import com.felhr.usbserial.UsbSerialInterface;
  */
 public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
 {
+    private static final int BAUD_RATE = 9600;
+
     private IPhy.OnChangesFromPhyLayer callback;
 
     private UsbDevice device;
@@ -28,24 +30,53 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
     @Override
     public boolean open()
     {
+        if(canBeArduino())
+        {
+            programmingPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
+            if(programmingPort != null)
+            {
+                if(programmingPort.open())
+                {
+                    programmingPort.setBaudRate(BAUD_RATE);
+                    programmingPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
+                    programmingPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
+                    programmingPort.setParity(UsbSerialInterface.PARITY_NONE);
+                    programmingPort.read(this);
+                    return true;
+                }
+            }
+        }else
+        {
+            return false;
+        }
         return false;
     }
 
     @Override
     public void write(byte[] data)
     {
-
+        programmingPort.write(data);
     }
 
     @Override
     public void close()
     {
-
+        programmingPort.close();
     }
 
     @Override
     public void onReceivedData(byte[] bytes)
     {
+        callback.onDataReceived(bytes);
+    }
 
+    private boolean canBeArduino()
+    {
+        int deviceVID = device.getVendorId();
+        int devicePID = device.getProductId();
+        if(deviceVID != 0x1d6b && (devicePID != 0x0001 || devicePID != 0x0002 || devicePID != 0x0003))
+            return true;
+        else
+           return false;
     }
 }
