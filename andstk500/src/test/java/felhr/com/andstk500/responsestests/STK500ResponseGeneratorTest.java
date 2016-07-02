@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import felhr.com.andstk500.commands.STK500Constants;

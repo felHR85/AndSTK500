@@ -315,7 +315,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     }
 
     @Override
-    public void onDataReceived(byte[] dataReceived)
+    public void onReceivedData(byte[] dataReceived)
     {
         boolean ret = responseGenerator.generateSTK500Response(currentCommand, dataReceived);
         if(ret)

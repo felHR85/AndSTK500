@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDeviceConnection;
 import junit.framework.TestCase;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
@@ -35,6 +36,13 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         mockedDevice = Mockito.mock(UsbDevice.class);
         mockedDeviceConnection = Mockito.mock(UsbDeviceConnection.class);
         candidate = new STKCommunicator(new FakePhyInterface(this));
+    }
+
+    @Test
+    public void testOpenSTK500Channel()
+    {
+        boolean response = candidate.openSTK500Channel();
+        assertEquals(true, response);
     }
 
     @Override
