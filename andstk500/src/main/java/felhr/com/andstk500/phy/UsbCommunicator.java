@@ -20,11 +20,16 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
 
     private UsbSerialDevice programmingPort;
 
-    public UsbCommunicator(IPhy.OnChangesFromPhyLayer callback ,UsbDevice device, UsbDeviceConnection connection)
+    public UsbCommunicator(UsbDevice device, UsbDeviceConnection connection)
     {
-        this.callback = callback;
         this.device = device;
         this.connection = connection;
+    }
+
+    @Override
+    public void setCallback(IPhy.OnChangesFromPhyLayer callback)
+    {
+        this.callback = callback;
     }
 
     @Override
@@ -42,6 +47,7 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
                     programmingPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
                     programmingPort.setParity(UsbSerialInterface.PARITY_NONE);
                     programmingPort.read(this);
+                    callback.onChannelOpened();
                     return true;
                 }
             }

@@ -8,6 +8,7 @@ public interface IPhy
     boolean open();
     void write(byte[] data);
     void close();
+    void setCallback(OnChangesFromPhyLayer onChangesFromPhyLayer);
 
     interface OnChangesFromPhyLayer
     {

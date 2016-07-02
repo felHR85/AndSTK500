@@ -31,10 +31,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         mockedDevice = Mockito.mock(UsbDevice.class);
         mockedDeviceConnection = Mockito.mock(UsbDeviceConnection.class);
 
-        candidate = new STKCommunicator(mockedDevice, mockedDeviceConnection);
-
-        FakePhyInterface fakePhyInterface = new FakePhyInterface(this);
-        candidate.injectPhyLayer(fakePhyInterface);
+        candidate = new STKCommunicator(new FakePhyInterface(this));
 
     }
 
@@ -85,6 +82,12 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         public void close()
         {
 
+        }
+
+        @Override
+        public void setCallback(OnChangesFromPhyLayer changesFromPhyLayer)
+        {
+            this.changesFromPhyLayer = changesFromPhyLayer;
         }
 
         private class OnReceiveThread extends Thread
