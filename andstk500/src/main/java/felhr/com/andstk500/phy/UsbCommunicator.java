@@ -73,7 +73,7 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
     @Override
     public void onReceivedData(byte[] bytes)
     {
-        callback.onDataReceived(bytes);
+        callback.onReceivedData(bytes);
     }
 
     private boolean canBeArduino()

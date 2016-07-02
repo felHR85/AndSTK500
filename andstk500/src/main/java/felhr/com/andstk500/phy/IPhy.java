@@ -13,7 +13,7 @@ public interface IPhy
     interface OnChangesFromPhyLayer
     {
         void onChannelOpened();
-        void onDataReceived(byte[] data);
+        void onReceivedData(byte[] data);
         void onChannelClosed();
     }
 }

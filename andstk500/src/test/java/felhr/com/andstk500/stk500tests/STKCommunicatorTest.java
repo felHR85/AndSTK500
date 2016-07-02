@@ -9,7 +9,11 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import felhr.com.andstk500.commands.STK500Constants;
 import felhr.com.andstk500.phy.IPhy;
+import felhr.com.andstk500.responses.STK500ResponseGenerator;
 import felhr.com.andstk500.stk500.STKCommunicator;
 
 /**
@@ -30,9 +34,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     {
         mockedDevice = Mockito.mock(UsbDevice.class);
         mockedDeviceConnection = Mockito.mock(UsbDeviceConnection.class);
-
         candidate = new STKCommunicator(new FakePhyInterface(this));
-
     }
 
     @Override
@@ -42,7 +44,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     }
 
     @Override
-    public void onDataReceived(byte[] data)
+    public void onReceivedData(byte[] data)
     {
 
     }
@@ -59,10 +61,17 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     private class FakePhyInterface implements IPhy
     {
         IPhy.OnChangesFromPhyLayer changesFromPhyLayer;
+        OnReceiveThread onReceiveThread;
+
+        AtomicBoolean keep;
 
         public FakePhyInterface(IPhy.OnChangesFromPhyLayer changesFromPhyLayer)
         {
             this.changesFromPhyLayer = changesFromPhyLayer;
+            onReceiveThread = new OnReceiveThread();
+            keep = new AtomicBoolean(true);
+            onReceiveThread.start();
+            while(!onReceiveThread.isAlive()){}
         }
 
         @Override
@@ -74,14 +83,14 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         @Override
         public void write(byte[] data)
         {
-            //TODO: 1) check STK command
-            //TODO: 2) Notify OnReceive thread
+            onReceiveThread.sendResponse();
         }
 
         @Override
         public void close()
         {
-
+            keep.set(false);
+            onReceiveThread.stopThread();
         }
 
         @Override
@@ -95,7 +104,32 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
             @Override
             public void run()
             {
-                //TODO: call IPhy.OnChangesFromPhyLayer
+                while(keep.get())
+                {
+                    synchronized(this)
+                    {
+                        try
+                        {
+                            wait();
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    byte[] response = new byte[]{STK500Constants.Resp_STK_INSYNC, STK500Constants.Resp_STK_OK};
+                    changesFromPhyLayer.onReceivedData(response);
+                }
+            }
+
+            public synchronized void sendResponse()
+            {
+                notify();
+            }
+
+            public synchronized void stopThread()
+            {
+                notify();
             }
         }
     }
