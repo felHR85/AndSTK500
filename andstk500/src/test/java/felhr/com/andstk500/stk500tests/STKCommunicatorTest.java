@@ -13,8 +13,8 @@ import org.mockito.Mockito;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import felhr.com.andstk500.commands.STK500Constants;
+import felhr.com.andstk500.commands.STKProgramPage;
 import felhr.com.andstk500.phy.IPhy;
-import felhr.com.andstk500.responses.STK500ResponseGenerator;
 import felhr.com.andstk500.stk500.STKCommunicator;
 
 /**
@@ -29,6 +29,8 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     private UsbDeviceConnection mockedDeviceConnection;
 
     private STKCommunicator candidate;
+
+    private boolean safeguard = true;
 
     @Before
     public void setUp()
@@ -45,6 +47,214 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         assertEquals(true, response);
     }
 
+    @Test
+    public void testGetSignOn()
+    {
+        candidate.openSTK500Channel();
+        candidate.getSignOn();
+        hold();
+    }
+
+    @Test
+    public void testGetSync()
+    {
+        candidate.openSTK500Channel();
+        candidate.getSync();
+        hold();
+    }
+
+    @Test
+    public void testGetParameterValue()
+    {
+        candidate.openSTK500Channel();
+        candidate.getParameterValue(0);
+        hold();
+    }
+
+    @Test
+    public void testSetParameterValue()
+    {
+        candidate.openSTK500Channel();
+        candidate.setParameterValue(0, 0);
+        hold();
+    }
+
+    @Test
+    public void testSetDevice()
+    {
+        candidate.openSTK500Channel();
+        candidate.setDevice();
+        hold();
+    }
+
+    @Test
+    public void testSetDeviceExt()
+    {
+        candidate.openSTK500Channel();
+        candidate.setDeviceExt(0, 0, 0, 0, 0);
+        hold();
+    }
+
+    @Test
+    public void testEnterProgramMode()
+    {
+        candidate.openSTK500Channel();
+        candidate.enterProgamMode();
+        hold();
+    }
+
+    @Test
+    public void testLeaveProgramMode()
+    {
+        candidate.openSTK500Channel();
+        candidate.leaveProgramMode();
+        hold();
+    }
+
+    @Test
+    public void testChipErase()
+    {
+        candidate.openSTK500Channel();
+        candidate.chipErase();
+        hold();
+    }
+
+    @Test
+    public void testCheckAutoInc()
+    {
+        candidate.openSTK500Channel();
+        candidate.checkAutoInc();
+        hold();
+    }
+
+    @Test
+    public void testLoadAddress()
+    {
+        candidate.openSTK500Channel();
+        candidate.loadAddress(0x00, 0x00);
+        hold();
+    }
+
+    @Test
+    public void testProgramFlash()
+    {
+        candidate.openSTK500Channel();
+        candidate.programFlash(0x00, 0x00);
+        hold();
+    }
+
+    @Test
+    public void testProgramData()
+    {
+        candidate.openSTK500Channel();
+        candidate.programData(0x00);
+        hold();
+    }
+
+    @Test
+    public void testProgramFuse()
+    {
+        candidate.openSTK500Channel();
+        candidate.programFuse(0x00, 0x00);
+        hold();
+    }
+
+    @Test
+    public void testProgramFuseExt()
+    {
+        candidate.openSTK500Channel();
+        candidate.programFuseExt(0x00, 0x00, 0x00);
+        hold();
+    }
+
+    @Test
+    public void testProgramLock()
+    {
+        candidate.openSTK500Channel();
+        candidate.programLock();
+        hold();
+    }
+
+    @Test
+    public void testProgramPage()
+    {
+        candidate.openSTK500Channel();
+        candidate.programPage(STKProgramPage.EEPROM, new byte[]{});
+        hold();
+    }
+
+    @Test
+    public void testReadFlash()
+    {
+        candidate.openSTK500Channel();
+        candidate.readFlash();
+        hold();
+    }
+
+    @Test
+    public void testReadData()
+    {
+        candidate.openSTK500Channel();
+        candidate.readData();
+        hold();
+    }
+
+    @Test
+    public void testReadFuse()
+    {
+        candidate.openSTK500Channel();
+        candidate.readFuse();
+        hold();
+    }
+
+    @Test
+    public void testReadFuseExt()
+    {
+        candidate.openSTK500Channel();
+        candidate.readFuseExt();
+        hold();
+    }
+
+    @Test
+    public void testReadLock()
+    {
+        candidate.openSTK500Channel();
+        candidate.readLock();
+        hold();
+    }
+
+    @Test
+    public void testReadPage()
+    {
+        candidate.openSTK500Channel();
+        candidate.readPage(0x00, 0x00, "E");
+        hold();
+    }
+
+    @Test
+    public void testReadSignature()
+    {
+        candidate.openSTK500Channel();
+        candidate.readSignature();
+        hold();
+    }
+
+    @Test
+    public void testReadOscillator()
+    {
+        candidate.openSTK500Channel();
+        candidate.readOscillator();
+        hold();
+    }
+
+    @Test
+    public void testReadOscillatorExt()
+    {
+        candidate.openSTK500Channel();
+        candidate.readOscillatorExt(0x00);
+        hold();
+    }
+
     @Override
     public void onChannelOpened()
     {
@@ -54,13 +264,36 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     @Override
     public void onReceivedData(byte[] data)
     {
-
+        assertEquals((byte) STK500Constants.Resp_STK_INSYNC, data[0]);
+        assertEquals((byte) STK500Constants.Resp_STK_OK, data[1]);
+        candidate.closeSTK500Channel();
+        release();
     }
 
     @Override
     public void onChannelClosed()
     {
 
+    }
+
+    private synchronized void hold()
+    {
+        while(safeguard)
+        {
+            try
+            {
+                wait();
+            }catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private synchronized void release()
+    {
+        safeguard = false;
+        notify();
     }
 
     /**
@@ -91,6 +324,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         @Override
         public void write(byte[] data)
         {
+            safeguard = true;
             onReceiveThread.sendResponse();
         }
 

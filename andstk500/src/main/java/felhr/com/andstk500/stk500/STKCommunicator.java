@@ -32,11 +32,18 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
 
     public boolean openSTK500Channel()
     {
-        return phyComm.open();
+        boolean ret = phyComm.open();
+        if(ret)
+        {
+            allowNewCommand.set(true);
+            return ret;
+        }
+        return false;
     }
 
     public void closeSTK500Channel()
     {
+        allowNewCommand.set(false);
         phyComm.close();
     }
 
@@ -320,6 +327,7 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         boolean ret = responseGenerator.generateSTK500Response(currentCommand, dataReceived);
         if(ret)
         {
+            allowNewCommand.set(true);
             STKInsync response = (STKInsync) responseGenerator.getCurrentResponse();
             //TODO: Send OK/NOK up through a callback still not defined
         }
