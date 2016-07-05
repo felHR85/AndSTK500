@@ -45,6 +45,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     {
         boolean response = candidate.openSTK500Channel();
         assertEquals(true, response);
+        candidate.closeSTK500Channel();
     }
 
     @Test
@@ -306,11 +307,14 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
 
         AtomicBoolean keep;
 
+        AtomicBoolean callbackSafeguard;
+
         public FakePhyInterface(IPhy.OnChangesFromPhyLayer changesFromPhyLayer)
         {
             this.changesFromPhyLayer = changesFromPhyLayer;
             onReceiveThread = new OnReceiveThread();
             keep = new AtomicBoolean(true);
+            callbackSafeguard = new AtomicBoolean(true);
             onReceiveThread.start();
             while(!onReceiveThread.isAlive()){}
         }
@@ -338,7 +342,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
         @Override
         public void setCallback(OnChangesFromPhyLayer changesFromPhyLayer)
         {
-            this.changesFromPhyLayer = changesFromPhyLayer;
+            //this.changesFromPhyLayer = changesFromPhyLayer;
         }
 
         private class OnReceiveThread extends Thread
@@ -350,15 +354,19 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
                 {
                     synchronized(this)
                     {
-                        try
+                        while(callbackSafeguard.get())
                         {
-                            wait();
-                        } catch (InterruptedException e)
-                        {
-                            e.printStackTrace();
+                            try
+                            {
+                                wait();
+                            } catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
+                    callbackSafeguard.set(true);
                     byte[] response = new byte[]{STK500Constants.Resp_STK_INSYNC, STK500Constants.Resp_STK_OK};
                     changesFromPhyLayer.onReceivedData(response);
                 }
@@ -366,6 +374,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
 
             public synchronized void sendResponse()
             {
+                callbackSafeguard.set(false);
                 notify();
             }
 
