@@ -37,7 +37,7 @@ public class STKCommunicatorTest extends TestCase implements IPhy.OnChangesFromP
     {
         mockedDevice = Mockito.mock(UsbDevice.class);
         mockedDeviceConnection = Mockito.mock(UsbDeviceConnection.class);
-        candidate = new STKCommunicator(new FakePhyInterface(this));
+        candidate = new STKCommunicator(new FakePhyInterface(this), null);
     }
 
     @Test
