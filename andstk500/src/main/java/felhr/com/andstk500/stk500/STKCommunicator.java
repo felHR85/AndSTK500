@@ -17,13 +17,16 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
     private STK500Command currentCommand;
     private STK500ResponseGenerator responseGenerator;
 
+    private ISTKCommCallback commCallback;
+
     // Usb constructor
-    public STKCommunicator(IPhy phyLayer)
+    public STKCommunicator(IPhy phyLayer, ISTKCommCallback commCallback)
     {
         phyLayer.setCallback(this);
         phyComm = phyLayer;
         allowNewCommand = new AtomicBoolean(false);
         responseGenerator = new STK500ResponseGenerator();
+        this.commCallback = commCallback;
     }
 
     /**
@@ -329,7 +332,8 @@ public class STKCommunicator implements IPhy.OnChangesFromPhyLayer
         {
             allowNewCommand.set(true);
             STKInsync response = (STKInsync) responseGenerator.getCurrentResponse();
-            //TODO: Send OK/NOK up through a callback still not defined
+            commCallback.onSTKResponse(response.getCommandId(), response.isOk(),
+                    response.getParameters(), response.getData());
         }
     }
 

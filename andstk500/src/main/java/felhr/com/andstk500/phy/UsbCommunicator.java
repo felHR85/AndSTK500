@@ -80,7 +80,7 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
     {
         int deviceVID = device.getVendorId();
         int devicePID = device.getProductId();
-        if(deviceVID != 0x1d6b && (devicePID != 0x0001 || devicePID != 0x0002 || devicePID != 0x0003))
+        if(deviceVID != 0x1d6b && (devicePID != 0x0001 && devicePID != 0x0002 && devicePID != 0x0003))
             return true;
         else
            return false;
