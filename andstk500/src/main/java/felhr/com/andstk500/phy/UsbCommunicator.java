@@ -1,8 +1,5 @@
 package felhr.com.andstk500.phy;
 
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 
@@ -15,15 +12,11 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
 
     private IPhy.OnChangesFromPhyLayer callback;
 
-    private UsbDevice device;
-    private UsbDeviceConnection connection;
-
     private UsbSerialDevice programmingPort;
 
-    public UsbCommunicator(UsbDevice device, UsbDeviceConnection connection)
+    public UsbCommunicator(UsbSerialDevice serialPort)
     {
-        this.device = device;
-        this.connection = connection;
+        this.programmingPort = serialPort;
     }
 
     @Override
@@ -35,25 +28,18 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
     @Override
     public boolean open()
     {
-        if(canBeArduino())
+        if(programmingPort != null)
         {
-            programmingPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
-            if(programmingPort != null)
+            if(programmingPort.open())
             {
-                if(programmingPort.open())
-                {
-                    programmingPort.setBaudRate(BAUD_RATE);
-                    programmingPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
-                    programmingPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
-                    programmingPort.setParity(UsbSerialInterface.PARITY_NONE);
-                    programmingPort.read(this);
-                    callback.onChannelOpened();
-                    return true;
-                }
+                programmingPort.setBaudRate(BAUD_RATE);
+                programmingPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
+                programmingPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
+                programmingPort.setParity(UsbSerialInterface.PARITY_NONE);
+                programmingPort.read(this);
+                callback.onChannelOpened();
+                return true;
             }
-        }else
-        {
-            return false;
         }
         return false;
     }
@@ -76,13 +62,4 @@ public class UsbCommunicator implements IPhy, UsbSerialInterface.UsbReadCallback
         callback.onReceivedData(bytes);
     }
 
-    private boolean canBeArduino()
-    {
-        int deviceVID = device.getVendorId();
-        int devicePID = device.getProductId();
-        if(deviceVID != 0x1d6b && (devicePID != 0x0001 && devicePID != 0x0002 && devicePID != 0x0003))
-            return true;
-        else
-           return false;
-    }
 }
