@@ -68,7 +68,7 @@ public class IntelHexParser
         int checksumValue =  Integer.decode(
                 "0x" + line.substring(line.length()-2, line.length()));
 
-        String payload = line.substring(0, line.length()-2);
+        String payload = line.substring(1, line.length()-2);
 
         int i = 0;
         int value = 0;
