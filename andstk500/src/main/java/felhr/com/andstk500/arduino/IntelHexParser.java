@@ -83,9 +83,6 @@ public class IntelHexParser
 
         value = ~(value) + 1;
 
-        if(checksumValue == (value & 0xff))
-            return true;
-
-        return false;
+        return checksumValue == (value & 0xff);
     }
 }
