@@ -29,7 +29,7 @@ public class IntelHexParser
 
             int byteCount = Integer.decode(byteCountStr);
 
-            if(byteCount == 0)
+            if(byteCount == 0) // Last line reached. Return sketch object
             {
                 return sketch;
             }
@@ -58,6 +58,8 @@ public class IntelHexParser
             // Checksum validation
             if(!isChecksumOk(hexData))
                 return null;
+
+            sketch.putBuffer(address, data);
 
         }
         return null;
